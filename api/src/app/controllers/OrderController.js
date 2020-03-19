@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 
+import { Op } from 'sequelize';
 import Order from '../models/Order';
 import Deliveryman from '../models/Deliveryman';
 import Recipient from '../models/Recipient';
@@ -9,7 +10,17 @@ import NewOrderDeliveryMail from '../jobs/NewOrderDeliveryMail';
 class OrderController {
   async index(req, res) {
     try {
-      const orders = await Order.findAll();
+      const { q } = req.query;
+      const orders = q
+        ? await Order.findAll({
+            where: {
+              product: {
+                [Op.iLike]: `%${q}%`
+              }
+            }
+          })
+        : await Order.findAll();
+
       return res.json(orders);
     } catch (err) {
       return res.status(500).json({ err });
