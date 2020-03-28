@@ -17,10 +17,10 @@ export default function Header() {
           <Link to="/dashboard">
             <img src={logo} alt="FastFeet" />
           </Link>
-          <NavLinkStyled to="/order">ENCOMENDAS</NavLinkStyled>
-          <NavLinkStyled to="/deliveryman">ENTREGADORES</NavLinkStyled>
-          <NavLinkStyled to="/recipient">DESTINATARIOS</NavLinkStyled>
-          <NavLinkStyled to="/problems">PROBLEMAS</NavLinkStyled>
+          <NavLinkStyled to="/encomendas">ENCOMENDAS</NavLinkStyled>
+          <NavLinkStyled to="/entregadores">ENTREGADORES</NavLinkStyled>
+          <NavLinkStyled to="/destinatarios">DESTINATÁRIOS</NavLinkStyled>
+          <NavLinkStyled to="/problemas">PROBLEMAS</NavLinkStyled>
         </nav>
         <aside>
           {/* <Notifications /> */}

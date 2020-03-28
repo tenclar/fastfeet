@@ -22,7 +22,7 @@ export const Content = styled.div`
     a {
       font-weight: bold;
       color: #999;
-      margin-right: 5px;
+      margin-right: 20px;
 
       &:hover,
       &.visited {
@@ -46,7 +46,7 @@ export const NavLinkStyled = styled(NavLink).attrs({
   activeClassName: 'visited',
 })`
   color: #999;
-
+  font-size: 15px;
   font-weight: bold;
   transition: color 0.5s;
   &:hover {

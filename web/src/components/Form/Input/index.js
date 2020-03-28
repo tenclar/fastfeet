@@ -18,4 +18,4 @@ export default function Input({ name, ...rest }) {
 
   return <input ref={inputRef} defaultValue={defaultValue} {...rest} />;
 }
-Input.propTypes = { name: PropTypes.element.isRequired };
+Input.propTypes = { name: PropTypes.string.isRequired };
