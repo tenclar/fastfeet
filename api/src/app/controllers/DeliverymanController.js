@@ -12,6 +12,12 @@ class DeliverymanController {
     }
   }
 
+  async show(req, res) {
+    const paramId = req.params.id;
+    const deliveryman = await Deliveryman.findByPk(paramId);
+    return res.json(deliveryman);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
@@ -65,14 +71,17 @@ class DeliverymanController {
     return res.json(deliveryman);
   }
 
-  async show(req, res) {
-    try {
-      const paramId = req.params.id;
-      const deliveryman = await Deliveryman.findByPk(paramId);
-      return res.json(deliveryman);
-    } catch (err) {
-      return res.status(500).json({ err });
+  async remove(req, res) {
+    const paramId = req.params.id;
+    if (!paramId || !paramId.match(/^-{0,1}\d+$/)) {
+      return res.status(400).json({ err: 'Recipient id not provided' });
     }
+
+    const deliveryman = await Deliveryman.findByPk(paramId);
+
+    await deliveryman.destroy();
+
+    return res.json({ message: 'Recipient removed' });
   }
 }
 export default new DeliverymanController();
