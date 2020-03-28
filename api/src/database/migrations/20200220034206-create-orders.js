@@ -15,9 +15,9 @@ module.exports = {
         onDelete: 'SET NULL',
         allowNull: false
       },
-      deliverer_id: {
+      deliveryman_id: {
         type: Sequelize.INTEGER,
-        references: { model: 'deliverers', key: 'id' },
+        references: { model: 'deliverymans', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
         allowNull: false
