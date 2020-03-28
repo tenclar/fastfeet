@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
 import ImgComp from '~/components/Img';
-import Input from '~/components/Input';
+import Input from '~/components/Form/Input';
 /* import { signInRequest } from '~/store/modules/auth/actions'; */
 
 const schema = Yup.object().shape({
