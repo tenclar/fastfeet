@@ -23,19 +23,20 @@ routes.get('/', (req, res) => {
 routes.post('/sessions', SessionController.store);
 routes.post('/users', UserController.store);
 
-routes.use(authMiddleware);
 routes.put('/users', UserController.update);
 routes.get('/users', UserController.index);
 routes.post('/files', upload.single('file'), FileController.store);
 
 routes.post('/recipients', RecipientController.store);
+routes.get('/recipients/:id', RecipientController.show);
 routes.put('/recipients/:id', RecipientController.update);
 routes.get('/recipients', RecipientController.index);
 routes.delete('/recipients/:id', RecipientController.remove);
 
+routes.get('/deliverymans/:id', DeliverymanController.show);
 routes.get('/deliverymans', DeliverymanController.index);
 routes.post('/deliverymans', DeliverymanController.store);
-routes.put('/deliverymans', DeliverymanController.update);
+routes.put('/deliverymans/:id', DeliverymanController.update);
 
 routes.get('/deliveryman/:id/deliveries', DeliveryController.index);
 
@@ -47,5 +48,5 @@ routes.put('/orders/:id/delivery', DeliveryController.update);
 
 routes.get('/delivery/:id/problems', DeliveryProblem.index);
 routes.delete('/delivery/:id/cancel', DeliveryProblem.destroy);
-
+routes.use(authMiddleware);
 export default routes;
