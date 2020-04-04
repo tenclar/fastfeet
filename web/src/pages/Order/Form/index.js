@@ -1,10 +1,12 @@
+import * as Yup from 'yup';
 import React, { useState, useEffect } from 'react';
 import { Form } from '@unform/web';
-import { Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { MdDone, MdKeyboardArrowLeft } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import Input from '~/components/Form/Input';
-import SelectReact from '~/components/Form/Select';
+import history from '~/services/history';
+
 import SelectAsync from '~/components/Form/SelectAsync';
 import {
   PanelForm,
@@ -17,36 +19,91 @@ import {
 import api from '~/services/api';
 
 export default function Forms() {
+  const { id } = useParams();
+  const [order, setOrder] = useState({});
   const [recipients, setRecipients] = useState([]);
+  const [deliverymans, setDeliverymans] = useState([]);
+
+  const [recipientselected, setRecipientselected] = useState(null);
+  const [deliverymanselected, setDeliverymanselected] = useState(null);
+
+  const schema = Yup.object().shape({
+    id: Yup.number(),
+    deliveryman_id: Yup.number().required('O Entregador é obrigatório'),
+    recipient_id: Yup.number().required('O Destinatério é obrigatório'),
+    product: Yup.string().required('O produto é obrigatório'),
+  });
+
+  async function loadRecipients(value) {
+    try {
+      const response = value
+        ? await api.get('recipients', {
+            params: { q: value },
+          })
+        : await api.get('recipients');
+      const { data } = response;
+      setRecipients(data);
+      return new Promise(resolve => {
+        resolve(data);
+      });
+    } catch (err) {
+      return toast.error('Erro na lista Recipients');
+    }
+  }
+
+  async function loadDeliverymans(value) {
+    try {
+      const response = value
+        ? await api.get('deliverymans', {
+            params: { q: value },
+          })
+        : await api.get('deliverymans');
+
+      const { data } = response;
+
+      setDeliverymans(data);
+      return new Promise(resolve => {
+        resolve(data);
+      });
+    } catch (err) {
+      return toast.error('Erro na lista Deliverymans');
+    }
+  }
 
   useEffect(() => {
-    async function loadRecipients() {
-      try {
-        const response = await api.get('recipients');
-        return setRecipients(response.data);
-      } catch (err) {
-        return toast.error('Erro na lista');
-      }
-    }
-
     loadRecipients();
+    loadDeliverymans();
   }, []);
 
-  const options = [
-    {
-      value: 1,
-      label: 'Entregador 1',
-    },
-    {
-      value: 2,
-      label: 'Entregador 2',
-    },
-  ];
-  function handleSubmit(data) {
-    console.tron.log(data);
+  useEffect(() => {
+    async function loadOrder(i) {
+      const response = await api.get(`orders/${i}`);
+      setOrder(response.data);
+      setRecipientselected(response.data.recipient);
+      setDeliverymanselected(response.data.deliveryman);
+    }
+    if (id) {
+      loadOrder(id);
+    }
+  }, [id]);
+
+  async function handleSubmit(data) {
+    try {
+      if (id) {
+        await api.put(`orders/${id}`, data);
+        toast.success('Cadastro atualizado com sucesso');
+      } else {
+        await api.post('orders', data);
+        toast.success('Cadastro efetuado com sucesso');
+      }
+      return history.push('/encomendas');
+    } catch (error) {
+      return toast.error('Erro não foi possível efetuar o cadastro');
+    }
   }
+
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form schema={schema} initialData={order} onSubmit={handleSubmit}>
       <PanelForm>
         <PanelHeader>
           <Title>Cadastro de Encomendas</Title>
@@ -54,7 +111,7 @@ export default function Forms() {
             <MdKeyboardArrowLeft size={24} />
             Voltar
           </Link>
-          <button type="button">
+          <button type="submit">
             <MdDone size={24} />
             Salvar
           </button>
@@ -68,16 +125,22 @@ export default function Forms() {
                 options={recipients}
                 id="recipient"
                 name="recipient_id"
-                getOptionValue={option => option.id}
-                getOptionLabel={option => option.title}
+                isClearable
+                value={recipientselected}
+                onChange={e => setRecipientselected(e)}
+                asyncFunc={loadRecipients}
               />
             </PanelGroup>
             <PanelGroup>
               <label htmlFor="deliveryman">Entregador</label>
-              <SelectReact
-                options={options}
+              <SelectAsync
+                options={deliverymans}
                 id="deliveryman"
-                name="deliveryman"
+                name="deliveryman_id"
+                isClearable
+                value={deliverymanselected}
+                onChange={e => setDeliverymanselected(e)}
+                asyncFunc={loadDeliverymans}
               />
             </PanelGroup>
           </PanelGrid>

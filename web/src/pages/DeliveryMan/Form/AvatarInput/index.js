@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useField } from '@unform/core';
+import PropTypes from 'prop-types';
 import api from '~/services/api';
 import { Container } from './styles';
 
-export default function AvatarInput() {
-  const { defaultValue, registerField } = useField('avatar');
+export default function AvatarInput({ name }) {
+  const { defaultValue = {}, registerField } = useField('avatar');
 
   const [file, setFile] = useState(defaultValue && defaultValue.id);
   const [preview, setPreview] = useState(defaultValue && defaultValue.url);
@@ -12,13 +13,17 @@ export default function AvatarInput() {
   const ref = useRef();
   useEffect(() => {
     if (ref.current) {
+      if (defaultValue !== null) {
+        setPreview(defaultValue.id);
+        setPreview(defaultValue.url);
+      }
       registerField({
         name: 'avatar_id',
         ref: ref.current,
         path: 'dataset.file',
       });
     }
-  }, [ref, registerField]);
+  }, [defaultValue, ref, registerField]);
 
   async function handleChange(e) {
     const data = new FormData();
@@ -47,9 +52,14 @@ export default function AvatarInput() {
           accept="image/*"
           data-file={file}
           onChange={handleChange}
+          name={name}
+          ref={ref}
         />
       </label>
       <span>Click para Alterar</span>
     </Container>
   );
 }
+AvatarInput.propTypes = {
+  name: PropTypes.string.isRequired,
+};

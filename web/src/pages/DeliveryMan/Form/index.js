@@ -49,6 +49,7 @@ export default function Forms() {
       return toast.error('Erro não foi possível efetuar o cadastro');
     }
   }
+
   return (
     <Form schema={schema} initialData={deliveryman} onSubmit={handleSubmit}>
       <Input name="id" type="hidden" />
