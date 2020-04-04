@@ -1,28 +1,47 @@
 import DeliveryProblem from '../models/DeliveryProblem';
 import Deliveryman from '../models/Deliveryman';
-import Delivery from '../models/Order';
+import Order from '../models/Order';
 import Recipient from '../models/Recipient';
 import Queue from '../../lib/Queue';
 import CancellationMail from '../jobs/CancellationMail';
 
 class DeliveryProblemController {
   async index(req, res) {
-    const { paramId } = req.params;
-    if (!paramId || !paramId.match(/^-{0,1}\d+$/)) {
-      return res.status(400).json({ err: 'Delivery Problem id not provided' });
-    }
-
-    const problems = paramId
-      ? await DeliveryProblem.findAll({
-          where: { delivery_id: paramId }
-        })
-      : await DeliveryProblem.findAll();
+    const problems = await DeliveryProblem.findAll();
 
     return res.json(problems);
   }
 
+  async show(req, res) {
+    const paramId = req.params.id;
+    if (!paramId || !paramId.match(/^-{0,1}\d+$/)) {
+      return res.status(400).json({ err: 'Order id not provided' });
+    }
+
+    const problems = await DeliveryProblem.findAll({
+      where: { order_id: paramId },
+      include: [{ model: Order }]
+    });
+
+    return res.json(problems);
+  }
+
+  async edit(req, res) {
+    const paramId = req.params.id;
+    if (!paramId || !paramId.match(/^-{0,1}\d+$/)) {
+      return res.status(400).json({ err: 'Delivery Problem id not provided' });
+    }
+
+    const problem = await DeliveryProblem.findOne({
+      where: { id: paramId },
+      include: [{ model: Order }]
+    });
+
+    return res.json(problem);
+  }
+
   async store(req, res) {
-    const { paramId } = req.params;
+    const paramId = req.params.id;
 
     if (!paramId || !paramId.match(/^-{0,1}\d+$/)) {
       return res.status(400).json({ err: 'Delivery Problem id not provided' });
@@ -30,14 +49,15 @@ class DeliveryProblemController {
 
     const { description } = req.body;
     const problem = await DeliveryProblem.create({
-      delivery_id: paramId,
+      order_id: paramId,
       description
     });
     return res.json(problem);
   }
 
   async destroy(req, res) {
-    const { paramId } = req.params;
+    const paramId = req.params.id;
+
     if (!paramId || !paramId.match(/^-{0,1}\d+$/)) {
       return res.status(400).json({ err: 'Delivery Problem id not provided' });
     }
@@ -48,12 +68,12 @@ class DeliveryProblemController {
       return res.json({ error: 'Delivery Problem not found.' });
     }
 
-    Delivery.update(
+    Order.update(
       { canceled_at: new Date() },
       { where: { id: problem.delivery_id } }
     );
 
-    const delivery = await Delivery.findOne({
+    const delivery = await Order.findOne({
       where: { id: problem.delivery_id },
       attributes: ['product', 'canceled_at'],
       include: [
@@ -62,7 +82,7 @@ class DeliveryProblemController {
           as: 'deliveryman',
           attributes: ['name', 'email']
         },
-        { model: Recipient, as: 'recipient', attributes: ['name'] }
+        { model: Recipient, as: 'recipient', attributes: ['id', 'name'] }
       ]
     });
 
@@ -70,7 +90,7 @@ class DeliveryProblemController {
       delivery
     });
 
-    return res.send();
+    return res.send(delivery);
   }
 }
 

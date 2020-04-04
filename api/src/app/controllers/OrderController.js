@@ -17,9 +17,35 @@ class OrderController {
               product: {
                 [Op.iLike]: `%${q}%`
               }
-            }
+            },
+
+            include: [
+              {
+                model: Recipient,
+                as: 'recipient',
+                attributes: ['id', 'name', 'city', 'state']
+              },
+              {
+                model: Deliveryman,
+                as: 'deliveryman',
+                attributes: ['id', 'name']
+              }
+            ]
           })
-        : await Order.findAll();
+        : await Order.findAll({
+            include: [
+              {
+                model: Recipient,
+                as: 'recipient',
+                attributes: ['id', 'name', 'city', 'state']
+              },
+              {
+                model: Deliveryman,
+                as: 'deliveryman',
+                attributes: ['id', 'name']
+              }
+            ]
+          });
 
       return res.json(orders);
     } catch (err) {
@@ -91,7 +117,19 @@ class OrderController {
   async show(req, res) {
     try {
       const paramId = req.params.id;
-      const order = await Order.findByPk(paramId);
+      const order = await Order.findByPk(paramId, {
+        include: [
+          {
+            model: Recipient,
+            as: 'recipient'
+          },
+          {
+            model: Deliveryman,
+            as: 'deliveryman',
+            attributes: ['id', 'name']
+          }
+        ]
+      });
       return res.json(order);
     } catch (err) {
       return res.status(500).json({ err });
