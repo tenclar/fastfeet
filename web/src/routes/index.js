@@ -39,7 +39,7 @@ export default function Routes() {
       <Route path="/encomendas/novo" component={OrderForm} isPrivate />
       <Route path="/encomendas" component={Order} isPrivate />
 
-      <Route path="/entregas/problemas" component={Problem} isPrivate />
+      <Route path="/problemas" component={Problem} isPrivate />
       <Route path="/profile" component={Profile} isPrivate />
 
       <Route path="/" component={() => <h1>404</h1>} />
