@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import Sequelize, { Model } from 'sequelize';
 
 class Order extends Model {
@@ -7,7 +8,19 @@ class Order extends Model {
         product: Sequelize.STRING,
         canceled_at: Sequelize.DATE,
         start_date: Sequelize.DATE,
-        end_date: Sequelize.DATE
+        end_date: Sequelize.DATE,
+        status: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return this.canceled_at
+              ? 'CANCELADA'
+              : this.start_date
+              ? this.end_date
+                ? 'ENTREGUE'
+                : 'RETIRADA'
+              : 'PENDENTE';
+          }
+        }
       },
       {
         sequelize
