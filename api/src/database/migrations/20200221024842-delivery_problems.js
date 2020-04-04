@@ -8,16 +8,16 @@ module.exports = {
         primaryKey: true
       },
 
-      deliveryman_id: {
+      order_id: {
         type: Sequelize.INTEGER,
-        references: { model: 'deliverymans', key: 'id' },
+        references: { model: 'orders', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
         allowNull: false
       },
 
       description: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false
       },
 
