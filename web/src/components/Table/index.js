@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import styled from 'styled-components';
 
 export const TableStyle = styled.table`
@@ -44,4 +45,42 @@ export const TableStyle = styled.table`
 export const TableImg = styled.div`
   display: flex;
   align-items: center;
+`;
+
+export const ColumnStatus = styled.div`
+  /*
+
+? 'CANCELADA'
+              : this.start_date
+              ? this.end_date
+                ? 'ENTREGUE'
+                : 'RETIRADA'
+              : 'PENDENTE'; */
+
+  color: ${props =>
+    props.isCancel
+      ? '#DE3B3B'
+      : props.isRetirada
+      ? props.isEntrege
+        ? '#2CA42B'
+        : '#4D85EE'
+      : '#C1BC35'};
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  align-content: space-around;
+  justify-content: center;
+  width: 110px;
+  height: 25px;
+  background: ${props =>
+    props.isCancel
+      ? '#FAB0B0'
+      : props.isRetirada
+      ? props.isEntrege
+        ? '#DFF0DF'
+        : '#BAD2FF'
+      : '#F0F0DF'};
+  border-radius: 12px;
+  opacity: 1;
 `;

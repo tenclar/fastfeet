@@ -13,6 +13,7 @@ export const Badge = styled.button`
 `;
 
 export const MenuList = styled.div`
+  z-index: 1;
   position: absolute;
   width: 150px;
   left: calc(50% - 90px);
