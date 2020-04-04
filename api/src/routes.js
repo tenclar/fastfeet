@@ -40,13 +40,19 @@ routes.put('/deliverymans/:id', DeliverymanController.update);
 
 routes.get('/deliveryman/:id/deliveries', DeliveryController.index);
 
+routes.get('/orders/:id', OrderController.show);
 routes.get('/orders', OrderController.index);
 routes.post('/orders', OrderController.store);
+routes.get('/orders/id', OrderController.update);
 
 routes.put('/orders/:id/pickup', PickupController.update);
 routes.put('/orders/:id/delivery', DeliveryController.update);
 
-routes.get('/delivery/:id/problems', DeliveryProblem.index);
+routes.get('/delivery/problems', DeliveryProblem.index);
+routes.get('/delivery/:id/problem', DeliveryProblem.edit);
+routes.get('/delivery/:id/problems', DeliveryProblem.show);
+routes.post('/delivery/:id/problems', DeliveryProblem.store);
 routes.delete('/delivery/:id/cancel', DeliveryProblem.destroy);
+
 routes.use(authMiddleware);
 export default routes;
