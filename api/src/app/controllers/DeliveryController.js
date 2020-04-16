@@ -1,13 +1,26 @@
 /* import * as Yup from 'yup'; */
 import File from '../models/File';
 import Delivery from '../models/Order';
+import Deliveryman from '../models/Deliveryman';
+import Recipient from '../models/Recipient';
 
 class DeliveryController {
   async index(req, res) {
     try {
+      const { page = 1, limit = 5 } = req.query;
       const paramId = req.params.id;
       const delivery = await Delivery.findAll({
-        where: { deliveryman_id: paramId }
+        where: { deliveryman_id: paramId, canceled_at: null },
+        limit,
+        offset: (page - 1) * limit,
+        include: [
+          {
+            model: Deliveryman,
+            as: 'deliveryman',
+            attributes: ['name', 'email']
+          },
+          { model: Recipient, as: 'recipient', attributes: ['name', 'city'] }
+        ]
       });
       return res.json(delivery);
     } catch (err) {
