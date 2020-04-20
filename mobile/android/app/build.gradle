@@ -134,6 +134,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        missingDimensionStrategy 'react-native-camera', 'general'
+        multiDexEnabled true
     }
     splits {
         abi {
@@ -194,6 +196,14 @@ dependencies {
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
+   /*  implementation (project(':react-native-camera')) {
+      exclude group: "com.google.android.gms"
+      implementation 'com.android.support:exifinterface:27.+'
+      implementation ('com.google.android.gms:play-services-vision:17.0.2') {
+          force = true
+      } 
+    }
+ */
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

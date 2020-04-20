@@ -7,7 +7,10 @@ import CancellationMail from '../jobs/CancellationMail';
 
 class DeliveryProblemController {
   async index(req, res) {
-    const problems = await DeliveryProblem.findAll();
+    const { id } = req.params;
+    const problems = await DeliveryProblem.findAll({
+      where: { order_id: id }
+    });
 
     return res.json(problems);
   }

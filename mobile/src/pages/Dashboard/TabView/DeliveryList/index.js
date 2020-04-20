@@ -23,7 +23,7 @@ import api from '~/services/api';
 
 import DeliveryItem from './DeliveryItem';
 
-export default function DeliveryList({ navigation, mode = 'Pending' }) {
+export default function DeliveryList({ navigation, status = 'pending' }) {
   const [deliveries, setDeliveries] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -46,7 +46,7 @@ export default function DeliveryList({ navigation, mode = 'Pending' }) {
     setPage(1);
     try {
       let url = `deliveryman/${id}/deliveries`;
-      if (mode === 'delivered') url += '?completed=true';
+      if (status === 'delivered') url += '?status=true';
 
       const { data } = await api.get(url);
 
@@ -58,7 +58,7 @@ export default function DeliveryList({ navigation, mode = 'Pending' }) {
       );
     }
     setLoading(false);
-  }, [id, mode]);
+  }, [id, status]);
 
   useEffect(() => {
     loadDeliveries();
@@ -72,7 +72,7 @@ export default function DeliveryList({ navigation, mode = 'Pending' }) {
 
     try {
       let url = `deliveryman/${id}/deliveries`;
-      if (mode === 'delivered') url += '?completed=true';
+      if (status === 'delivered') url += '?status=true';
 
       const { data } = await api.get(url);
       console.tron.log(data);
@@ -85,7 +85,7 @@ export default function DeliveryList({ navigation, mode = 'Pending' }) {
     }
     setRefreshing(false);
     setHasMore(true);
-  }, [id, mode]);
+  }, [id, status]);
 
   const loadMore = useCallback(async () => {
     if (loadingMore || !hasMore) return;
@@ -96,7 +96,7 @@ export default function DeliveryList({ navigation, mode = 'Pending' }) {
       const params = { page: page + 1 };
       const url = `deliveryman/${id}/deliveries`;
 
-      if (mode === 'delivered') {
+      if (status === 'delivered') {
         params.completed = true;
       }
 
@@ -105,7 +105,6 @@ export default function DeliveryList({ navigation, mode = 'Pending' }) {
       if (data.length > 0) {
         setDeliveries([...deliveries, ...parseDeliveries(data)]);
         setPage(page + 1);
-        console.tron.log(page);
       } else {
         setHasMore(false);
       }
@@ -117,7 +116,7 @@ export default function DeliveryList({ navigation, mode = 'Pending' }) {
     }
 
     setLoadingMore(false);
-  }, [hasMore, loadingMore, id, mode, page, deliveries]);
+  }, [hasMore, loadingMore, id, status, page, deliveries]);
 
   return (
     <Container>
@@ -160,10 +159,10 @@ export default function DeliveryList({ navigation, mode = 'Pending' }) {
 }
 
 DeliveryList.defaultProps = {
-  mode: 'Pending',
+  status: 'Pending',
 };
 
 DeliveryList.propTypes = {
   navigation: PropTypes.instanceOf(Object).isRequired,
-  mode: PropTypes.string,
+  status: PropTypes.string,
 };

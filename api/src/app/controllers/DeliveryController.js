@@ -1,4 +1,5 @@
 /* import * as Yup from 'yup'; */
+import { Op } from 'sequelize';
 import File from '../models/File';
 import Delivery from '../models/Order';
 import Deliveryman from '../models/Deliveryman';
@@ -7,21 +8,60 @@ import Recipient from '../models/Recipient';
 class DeliveryController {
   async index(req, res) {
     try {
-      const { page = 1, limit = 5 } = req.query;
+      const { page = 1, limit = 5, status = null } = req.query;
       const paramId = req.params.id;
-      const delivery = await Delivery.findAll({
-        where: { deliveryman_id: paramId, canceled_at: null },
-        limit,
-        offset: (page - 1) * limit,
-        include: [
-          {
-            model: Deliveryman,
-            as: 'deliveryman',
-            attributes: ['name', 'email']
-          },
-          { model: Recipient, as: 'recipient', attributes: ['name', 'city'] }
-        ]
-      });
+      const delivery = status
+        ? await Delivery.findAll({
+            where: {
+              deliveryman_id: paramId,
+              canceled_at: null,
+              end_date: {
+                [Op.not]: null
+              }
+            },
+            limit,
+            offset: (page - 1) * limit,
+            include: [
+              {
+                model: Deliveryman,
+                as: 'deliveryman',
+                attributes: ['name', 'email']
+              },
+              {
+                model: Recipient,
+                as: 'recipient',
+                attributes: ['name', 'city', 'street', 'number', 'complement']
+              }
+            ]
+          })
+        : await Delivery.findAll({
+            where: {
+              deliveryman_id: paramId,
+              canceled_at: null,
+              end_date: null
+            },
+            limit,
+            offset: (page - 1) * limit,
+            include: [
+              {
+                model: Deliveryman,
+                as: 'deliveryman',
+                attributes: ['name', 'email']
+              },
+              {
+                model: Recipient,
+                as: 'recipient',
+                attributes: [
+                  'name',
+                  'city',
+                  'street',
+                  'number',
+                  'complement',
+                  'state'
+                ]
+              }
+            ]
+          });
       return res.json(delivery);
     } catch (err) {
       return res.status(500).json({ err });
@@ -30,13 +70,15 @@ class DeliveryController {
 
   async show(req, res) {
     try {
-      const paramId = req.params.id;
-      if (!paramId || !paramId.match(/^-{0,1}\d+$/))
-        return res.status(400).json({ err: 'Delivery id not provided' });
+      const { id, deliveryId } = req.params;
+      /* if (!paramId || !paramId.match(/^-{0,1}\d+$/))
+        return res.status(400).json({ err: 'Delivery id not provided' }); */
 
       const delivery = await Delivery.findOne({
         where: {
-          deliveryman_id: paramId,
+          id,
+          deliveryman_id: deliveryId,
+
           start_date: null,
           canceled_at: null
         }
@@ -54,12 +96,16 @@ class DeliveryController {
 
   async update(req, res) {
     try {
-      const paramId = req.params.id;
-      if (!paramId || !paramId.match(/^-{0,1}\d+$/)) {
-        return res.status(400).json({ err: 'Delivery id not provided' });
-      }
+      console.log('consulta api');
+      const { id, deliverymanId } = req.params;
 
-      const delivery = await Delivery.findByPk(paramId);
+      const delivery = await Delivery.findOne({
+        where: {
+          id,
+          deliveryman_id: deliverymanId
+        }
+      });
+
       if (!delivery) {
         return res.status(404).json({ err: 'delivery not found' });
       }

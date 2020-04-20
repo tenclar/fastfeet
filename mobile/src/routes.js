@@ -10,7 +10,7 @@ import SignIn from '~/pages/SignIn';
 import Dashboard from '~/pages/Dashboard';
 import Profile from '~/pages/Profile';
 import DeliveryDetail from '~/pages/DeliveryDetail';
-import DeliveryProblem from '~/pages/DeliveryProblem';
+import DeliveryProblemInfo from '~/pages/DeliveryProblemInfo';
 import DeliveryProblemView from '~/pages/DeliveryProblemView';
 import DeliveryConfirm from '~/pages/DeliveryConfirm';
 
@@ -28,7 +28,7 @@ export default (isSigned = false) =>
                 {
                   Dashboard,
                   DeliveryDetail,
-                  DeliveryProblem,
+                  DeliveryProblemInfo,
                   DeliveryProblemView,
                   DeliveryConfirm,
                 },

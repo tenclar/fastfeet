@@ -61,9 +61,9 @@ export default function CustomTabView({ navigation }) {
       renderScene={({ route }) => {
         switch (route.key) {
           case 'pending':
-            return <DeliveryList navigation={navigation} mode="pending" />;
+            return <DeliveryList navigation={navigation} status="pending" />;
           case 'delivered':
-            return <DeliveryList navigation={navigation} mode="delivered" />;
+            return <DeliveryList navigation={navigation} status="delivered" />;
           default:
             return null;
         }

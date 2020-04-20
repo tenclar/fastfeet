@@ -39,16 +39,17 @@ routes.post('/deliverymans', DeliverymanController.store);
 routes.put('/deliverymans/:id', DeliverymanController.update);
 
 routes.get('/deliveryman/:id/deliveries', DeliveryController.index);
+routes.get('/deliveryman/:deliveryId/delivery/:id', DeliveryController.show);
 
 routes.get('/orders/:id', OrderController.show);
 routes.get('/orders', OrderController.index);
 routes.post('/orders', OrderController.store);
 routes.get('/orders/id', OrderController.update);
 
-routes.put('/orders/:id/pickup', PickupController.update);
-routes.put('/orders/:id/delivery', DeliveryController.update);
+routes.put('/orders/:id/pickup/:deliverymanId', PickupController.update);
+routes.put('/orders/:id/delivery/:deliverymanId', DeliveryController.update);
 
-routes.get('/delivery/problems', DeliveryProblem.index);
+routes.get('/delivery/:id/problems', DeliveryProblem.index);
 routes.get('/delivery/:id/problem', DeliveryProblem.edit);
 routes.get('/delivery/:id/problems', DeliveryProblem.show);
 routes.post('/delivery/:id/problems', DeliveryProblem.store);
