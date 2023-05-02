@@ -26,6 +26,11 @@ https://github.com/rocketseat-education/bootcamp-gostack-desafio-10
 
 Existe um usuário administrador padrão: admin@fastfeet.com / 123456
 
+🎨 Layout
+O layout do sistema está em anexo como um arquivo .xd.
+
+Você pode utilizar a seguinte URL para visualizar todas as telas: Visualizar
+
 ### 📱Iniciando com o Mobile (Apenas Android)
 1. ``cd mobile``
 2. ``yarn``
